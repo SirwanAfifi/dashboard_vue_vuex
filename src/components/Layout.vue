@@ -7,7 +7,7 @@
       <section class="h-full w-72 bg-gray-800">
         <Tree :assets="assets" :depth="0" />
       </section>
-      <main class="flex-1 overflow-x-auto">
+      <main class="flex-1 overflow-x-auto m-16">
         <LineChart />
       </main>
     </div>

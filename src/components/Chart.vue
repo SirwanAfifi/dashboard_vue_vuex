@@ -5,26 +5,21 @@ export default {
   extends: Line,
   mounted() {
     this.$store.subscribe(mutation => {
-      const data = mutation.payload.measurements;
-      if (!data) return;
-      const labels = Object.keys(data).map(dt => new Date(dt).toLocaleString("default", { month: "long" }));
-      const dataset = Object.entries(data).reduce((r, [key, value]) => {
-        let month = new Date(key).toLocaleString("default", { month: "long" });
-        if (!r[month]) r[month] = [value];
-        else r[month].push(value);
-        return r;
-      }, {});
-
+      const { measurements, asset } = mutation.payload;
+      if (!measurements) return;
+      const labels = Object.keys(measurements).map(dt => new Date(dt).toLocaleString("default", { month: "long" }));
       this.renderChart(
         {
           labels,
-          datasets: Object.entries(JSON.parse(JSON.stringify(dataset))).map(([itemKey, itemValues]) => ({
-            label: itemKey,
-            data: itemValues,
-            backgroundColor: "transparent",
-            borderColor: "rgba(1, 116, 188, 0.50)",
-            pointBackgroundColor: "rgba(171, 71, 188, 1)",
-          })),
+          datasets: [
+            {
+              label: asset.name,
+              data: Object.values(JSON.parse(JSON.stringify(Object.entries(measurements)))).map(i => i[1]),
+              backgroundColor: "transparent",
+              borderColor: "rgba(1, 116, 188, 0.50)",
+              pointBackgroundColor: "rgba(171, 71, 188, 1)",
+            },
+          ],
         },
         {
           responsive: true,
