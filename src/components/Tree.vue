@@ -28,14 +28,28 @@
       </svg>
       <span class="ml-2">{{ assets.name }}</span>
     </li>
-    <Tree v-if="expanded" v-for="asset in assets.children" v-bind:key="asset.id" :assets="asset" :depth="depth + 1" />
+    <Tree
+      v-if="expanded"
+      :fireEvent="{ fireEvent }"
+      v-for="asset in assets.children"
+      v-bind:key="asset.id"
+      :assets="asset"
+      :depth="depth + 1"
+    />
   </ul>
 </template>
 <script>
 import measurements from "../mock-data/measurements.json";
 export default {
   name: "Tree",
-  props: ["assets", "depth"],
+  props: {
+    assets: { type: Object },
+    depth: { type: Number },
+    fireEvent: {
+      type: Boolean,
+      default: true,
+    },
+  },
   data() {
     return {
       expanded: true,
@@ -43,8 +57,10 @@ export default {
   },
   methods: {
     setSelectedAsset(asset) {
+      if (!this.fireEvent.fireEvent) return;
       this.expanded = !this.expanded;
       const foundItem = measurements.find(item => item.assetId === asset.id);
+      // const measurements = ids.map(id => measurements.find(item => item.assetId === asset.id))
       /* {
         label: "Data 1",
         data: [2, 10, 5, 9, 0, 6, 20],

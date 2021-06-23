@@ -8,7 +8,7 @@
         <Tree :assets="assets" :depth="0" />
       </section>
       <main class="flex-1 overflow-x-auto m-16">
-        <LineChart />
+        <LineChart :data="selectedAssets.data" :labels="selectedAssets.labels" name="name" :key="selectedAssets.name" />
       </main>
     </div>
   </div>
@@ -31,7 +31,22 @@ export default {
         name: "",
         children: tree,
       },
+      selectedAssets: {
+        labels: [],
+        data: [],
+        name: ""
+      }
     };
   },
+  mounted() {
+    this.$store.subscribe(mutation => {
+      const { measurements, asset } = mutation.payload;
+      if (!measurements) return;
+      const labels = Object.keys(measurements).map(dt => new Date(dt).toLocaleString("default", { month: "long" }));
+      this.selectedAssets.labels = labels;
+      this.selectedAssets.data = Object.values(JSON.parse(JSON.stringify(Object.entries(measurements)))).map(i => i[1]);
+      this.selectedAssets.name = asset;
+    });
+  }
 };
 </script>

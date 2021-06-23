@@ -3,18 +3,15 @@ import { Line } from "vue-chartjs";
 
 export default {
   extends: Line,
+  props: ["labels", "data", "name"],
   mounted() {
-    this.$store.subscribe(mutation => {
-      const { measurements, asset } = mutation.payload;
-      if (!measurements) return;
-      const labels = Object.keys(measurements).map(dt => new Date(dt).toLocaleString("default", { month: "long" }));
-      this.renderChart(
+    this.renderChart(
         {
-          labels,
+          labels: this.labels,
           datasets: [
             {
-              label: asset.name,
-              data: Object.values(JSON.parse(JSON.stringify(Object.entries(measurements)))).map(i => i[1]),
+              label: this.name,
+              data: this.data,
               backgroundColor: "transparent",
               borderColor: "rgba(1, 116, 188, 0.50)",
               pointBackgroundColor: "rgba(171, 71, 188, 1)",
@@ -30,7 +27,6 @@ export default {
           },
         },
       );
-    });
   },
 };
 </script>
